@@ -59,7 +59,8 @@ class syntax_plugin_nslist extends DokuWiki_Syntax_Plugin {
             'ns'    => getNS($ID),
             'depth' => 1,
             'date'  => 1,
-            'dsort' => 1
+            'dsort' => 1,
+            'start' => 1
         );
 
         list($ns,$params) = explode(' ',$match,2);
@@ -67,6 +68,7 @@ class syntax_plugin_nslist extends DokuWiki_Syntax_Plugin {
 
         if(preg_match('/\bnodate\b/i',$params))  $conf['date'] = 0;
         if(preg_match('/\bnodsort\b/i',$params)) $conf['dsort'] = 0;
+        if(preg_match('/\bnostart\b/i',$params)) $conf['start'] = 0;
         if(preg_match('/\b(\d+)\b/i',$params,$m))   $conf['depth'] = $m[1];
         if($ns) $conf['ns'] = $ns;
 
@@ -105,6 +107,9 @@ class syntax_plugin_nslist extends DokuWiki_Syntax_Plugin {
 
         $R->listu_open();
         foreach($result as $item){
+            if(!$data['start'] && noNS($item['id']) == $conf['start']){
+                continue;
+            }
             $R->listitem_open(1);
             $R->listcontent_open();
             $R->internallink(':'.$item['id']);
